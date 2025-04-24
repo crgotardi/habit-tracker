@@ -117,4 +117,34 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  h1 {
+    @apply text-4xl font-bold;
+  }
+
+  h2 {
+    @apply text-3xl font-bold;
+  }
+
+  h3 {
+    @apply text-2xl font-bold;
+  }
+
+  h4 {
+    @apply text-xl font-bold;
+  }
+}
+
+@layer components {
+
+}
+
+@layer utilities {
+  .blue-gradient {
+    @apply bg-gradient-to-r from-sky-200 via-blue-400 to-indigo-900;
+  }
+
+  .error-message {
+    @apply text-red-500 text-sm;
+  }
 }
