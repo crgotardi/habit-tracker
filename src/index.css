@@ -139,6 +139,14 @@
   .card {
     @apply border border-b-neutral-100 bg-neutral-50 rounded-md shadow-xs
   }
+
+  .toaster-success {
+    @apply !bg-green-600 !text-gray-50;
+  }
+
+  .toaster-error {
+    @apply !bg-red-600 !text-gray-50;
+  }
 }
 
 @layer utilities {
