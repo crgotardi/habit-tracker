@@ -22,7 +22,7 @@ const SignInForm: React.FC = () => {
     const navigate = useNavigate()
 
     const onSubmit: SubmitHandler<SignInFormType> = async (formData) => {
-        signIn({ email: formData.email, name: 'John Doe', id: 1 })
+        await signIn({ email: formData.email, name: 'John Doe', id: 1 })
         navigate('/dashboard')
     }
 

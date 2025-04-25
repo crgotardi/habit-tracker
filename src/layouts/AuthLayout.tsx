@@ -12,7 +12,6 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, className }) => {
         className
     )
 
-    
     return (
         <main className={classList}>
             { children }
