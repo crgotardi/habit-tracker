@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react'
 import delay from '@/utils/delay';
-import { UserType } from '@/types/user'
+import { UserType } from '@/types/user';
 
 type AuthContextProps = {
     user: UserType | undefined

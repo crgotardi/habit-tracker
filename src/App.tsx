@@ -1,8 +1,8 @@
 function App() {
   return (
-    <>
+    <main>
       Home page
-    </>
+    </main>
   )
 }
 

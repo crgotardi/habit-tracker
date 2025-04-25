@@ -5,8 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui"
 import Button from '@/components/Button/Button';
 import AuthContext from '@/contexts/AuthContext';
-import SignInFormSchema from '@/schemas/SignInFormSchema';
-import { SignInFormType } from '@/types/auth'
+import SignInFormSchema from '@/pages/signin/schemas/SignInFormSchema';
+
+export type SignInFormType = {
+    email: string
+    password: string
+}
 
 const SignInForm: React.FC = () => {
     const { formState: { errors, isSubmitting }, handleSubmit, register } = useForm<SignInFormType>({
@@ -18,7 +22,7 @@ const SignInForm: React.FC = () => {
     const navigate = useNavigate()
 
     const onSubmit: SubmitHandler<SignInFormType> = async (formData) => {
-        await signIn({ email: formData.email, name: 'John Doe', id: 1 })
+        signIn({ email: formData.email, name: 'John Doe', id: 1 })
         navigate('/dashboard')
     }
 

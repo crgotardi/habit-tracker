@@ -1,8 +1,20 @@
+import clsx from "clsx"
 import { ReactNode } from "react"
 
-const AuthLayout: React.FC<{children: ReactNode}> = ({ children }) => {
+type AuthLayoutProps = {
+    children: ReactNode,
+    className?: string
+}
+
+const AuthLayout: React.FC<AuthLayoutProps> = ({ children, className }) => {
+    const classList = clsx(
+        'w-dvw h-dvh flex justify-center items-center',
+        className
+    )
+
+    
     return (
-        <main className="w-dvw h-dvh flex justify-center items-center blue-gradient">
+        <main className={classList}>
             { children }
         </main>
     )

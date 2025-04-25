@@ -1,4 +1,4 @@
-import { SignInFormType } from '@/types/auth'
+import { SignInFormType } from '@/pages/signin/components/SignInForm'
 import { z, ZodType } from 'zod'
 
 const SignInFormSchema: ZodType<SignInFormType> = z.object({
