@@ -1,20 +1,22 @@
 import { lazy, Suspense } from 'react'
 import { createBrowserRouter } from 'react-router'
 import App from '@/App';
-const Auth = lazy(() => import('@/pages/auth'))
-const SignUp = lazy(() => import('@/pages/signup'))
 import Loading from '@/pages/loading';
+const SignIn = lazy(() => import('@/pages/signin'))
+const SignUp = lazy(() => import('@/pages/signup'))
+const Dashboard = lazy(() => import('@/pages/dashboard'))
 
 const router = createBrowserRouter([
     {
         path: '/',
+        index: true,
         element: <App />,
     },
     {
-        path: '/auth',
+        path: '/signin',
         element: (
             <Suspense fallback={<Loading />}>
-                <Auth />
+                <SignIn />
             </Suspense>
         ),
     },
@@ -26,6 +28,18 @@ const router = createBrowserRouter([
             </Suspense>
         )
     },
+    {
+        path: '/dashboard',
+        element: (
+            <Suspense fallback={<Loading />}>
+                <Dashboard />
+            </Suspense>
+        )
+    },    
+    {
+        path: '*',
+        element: (<p>Not found</p>)
+    }
 ]);
 
 export default router
