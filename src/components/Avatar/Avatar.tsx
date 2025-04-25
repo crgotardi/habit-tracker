@@ -5,7 +5,7 @@ type AvatarProps = {
     src: string,
     alt: string,
     title?: string
-    size: 'default' | 'sm' | 'lg'
+    size?: 'default' | 'sm' | 'lg'
 }
 
 const avatarVariants = cva(
