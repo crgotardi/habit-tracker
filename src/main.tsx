@@ -6,11 +6,14 @@ import { Toaster } from 'sonner';
 
 import './index.css'
 import { AuthProvider } from './contexts/AuthContext'
+import { HabitProvider } from './contexts/HabitContext';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <HabitProvider>
+        <RouterProvider router={router} />
+      </HabitProvider>
       <Toaster
         position='top-center'
         toastOptions={{

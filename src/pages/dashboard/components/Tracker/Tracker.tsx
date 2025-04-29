@@ -1,26 +1,27 @@
-import BarChart from "@/components/Charts/BarChart/BarChart"
 import clsx from "clsx"
+import { use, useEffect } from "react"
+import BarChart from "@/components/Charts/BarChart/BarChart"
+import HabitContext from "@/contexts/HabitContext"
 
 type TrackerProps = {
     className?: string,
 }
 
-const chartData = [
-    { description: "Read a book", strikes: 10 },
-    { description: "Gym", strikes: 2 },
-    { description: "Meditation", strikes: 4 },
-    { description: "Learn a new language", strikes: 7 },
-]
-
 const Tracker: React.FC<TrackerProps> = ({ className }) => {
     const classList = clsx('card p-4', className)
+    const { strikes, getStrikes } = use(HabitContext)
+
+    useEffect(() => {
+        getStrikes()
+    }, [getStrikes])
     
     return (
         <div className={classList}>
             <h4>Streaks</h4>
+            
             <BarChart
                 config={{
-                    data: chartData,
+                    data: strikes,
                     layout: 'vertical',
                     yAxis: 'description',
                     xAxis: 'strikes',

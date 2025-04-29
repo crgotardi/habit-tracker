@@ -1,5 +1,5 @@
 import { Label, PolarGrid, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts"
-import ChartLayout from "@/layouts/ChartLayout"
+import { ChartContainer } from "@/components/ui/chart"
 
 interface RadialChartDataItem {
     label: string,
@@ -17,16 +17,17 @@ const RadialChart: React.FC<RadialChartProps<RadialChartDataItem>> = ({ config }
     const { data } = config
 
     return (
-        <ChartLayout
+        <ChartContainer
             config={{}}
             className="mx-auto aspect-square max-h-[250px]"
         >
             <RadialBarChart
                 data={data}
                 startAngle={0}
-                endAngle={250}
+                endAngle={360 / data[0].total * data[0].completed}
                 innerRadius={80}
                 outerRadius={110}
+                className="fill-gray-800"
             >
                 <PolarGrid
                     gridType="circle"
@@ -35,7 +36,7 @@ const RadialChart: React.FC<RadialChartProps<RadialChartDataItem>> = ({ config }
                     className="first:fill-muted last:fill-background"
                     polarRadius={[86, 74]}
                 />
-                <RadialBar dataKey="visitors" background cornerRadius={10} />
+                <RadialBar dataKey='completed' background cornerRadius={10} />
                 <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
                     <Label
                         content={({ viewBox }) => {
@@ -52,7 +53,7 @@ const RadialChart: React.FC<RadialChartProps<RadialChartDataItem>> = ({ config }
                                             y={viewBox.cy}
                                             className="fill-foreground text-4xl font-bold"
                                         >
-                                            {data[0].label}
+                                            {data[0].completed} of {data[0].total}
                                         </tspan>
                                         <tspan
                                             x={viewBox.cx}
@@ -68,7 +69,7 @@ const RadialChart: React.FC<RadialChartProps<RadialChartDataItem>> = ({ config }
                     />
                 </PolarRadiusAxis>
             </RadialBarChart>
-        </ChartLayout>
+        </ChartContainer>
     )
 }
 

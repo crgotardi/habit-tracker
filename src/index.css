@@ -95,11 +95,7 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
+  --chart-1: oklch(27.8% 0.033 256.848);
   --sidebar: oklch(0.21 0.034 264.665);
   --sidebar-foreground: oklch(0.985 0.002 247.839);
   --sidebar-primary: oklch(0.488 0.243 264.376);
@@ -137,7 +133,7 @@
 
 @layer components {
   .card {
-    @apply border border-b-neutral-100 bg-neutral-50 rounded-md shadow-xs
+    @apply border border-b-neutral-100 bg-neutral-50 rounded-md
   }
 
   .toaster-success {

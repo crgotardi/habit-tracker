@@ -1,5 +1,7 @@
-import RadialChart from "@/components/Charts/RadialChart/RadialChart"
 import clsx from "clsx"
+import { use, useMemo } from "react"
+import RadialChart from "@/components/Charts/RadialChart/RadialChart"
+import HabitContext from "@/contexts/HabitContext"
 
 type ProgressProps = {
     className?: string,
@@ -7,10 +9,15 @@ type ProgressProps = {
 
 const Progress: React.FC<ProgressProps> = ({ className }) => {
     const classList = clsx('card p-4', className)
+    const { habits } = use(HabitContext)
 
-    const chartData = [
-        { total: 4, completed: 3, label: 'Tasks' },
-    ]
+    const chartData = useMemo(() => {
+        return [{
+            total: habits.length,
+            completed: habits.filter(habit => habit.isCompleted).length,
+            label: 'Tasks'
+        }]
+    }, [habits])
 
     return (
         <div className={classList}>

@@ -1,7 +1,7 @@
 import { Bar, BarChart as ReBarChart, LabelList, XAxis, YAxis } from "recharts"
-import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { DataType, LayoutType } from "@/components/Charts/types"
-import ChartLayout from "@/layouts/ChartLayout"
+import clsx from "clsx"
 
 type BarChartProps<DataType> = {
     config: {
@@ -9,26 +9,30 @@ type BarChartProps<DataType> = {
         layout?: LayoutType,
         yAxis: string,
         xAxis: string,
-    }
+    },
+    className?: string
 }
 
-const BarChart: React.FC<BarChartProps<DataType>> = ({ config }) => {
+const BarChart: React.FC<BarChartProps<DataType>> = ({ config, className }) => {
     const { data, layout, yAxis, xAxis } = config
+    const classList = clsx('chart', className)
 
     return (
-        <ChartLayout config={{}}>
+        <ChartContainer className={classList} config={{}}>
             <ReBarChart
                 data={data}
                 layout={layout}
                 margin={{
                     right: 16,
                 }}
+                barCategoryGap={'10%'}
+                barGap={'10%'}
             >
                 <YAxis
                     dataKey={yAxis}
                     type="category"
                     tickLine={false}
-                    tickMargin={10}
+                    tickMargin={2}
                     axisLine={false}
                     tickFormatter={(value) => value.slice(0, 3)}
                     hide
@@ -41,14 +45,15 @@ const BarChart: React.FC<BarChartProps<DataType>> = ({ config }) => {
                 <Bar
                     dataKey={xAxis}
                     layout={layout}
-                    fill="var(--color-desktop)"
-                    radius={4}
+                    maxBarSize={50}
+                    className="fill-gray-800 font-bold"
+                    radius={8}
                 >
                     <LabelList
                         dataKey={yAxis}
                         position="insideLeft"
                         offset={8}
-                        className="fill-[--color-label]"
+                        className="fill-accent"
                         fontSize={12}
                     />
                     <LabelList
@@ -60,7 +65,7 @@ const BarChart: React.FC<BarChartProps<DataType>> = ({ config }) => {
                     />
                 </Bar>
             </ReBarChart>
-        </ChartLayout>
+        </ChartContainer>
     )
 }
 

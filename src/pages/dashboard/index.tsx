@@ -1,15 +1,17 @@
-import { use } from "react"
+import clsx from "clsx"
+import { use, useEffect } from "react"
 import Progress from "./components/Progress/Progress"
 import Tasks from "./components/Tasks/Tasks"
 import Tracker from "./components/Tracker/Tracker"
+import AuthContext from "@/contexts/AuthContext"
 import withAuth from "@/hocs/withAuth"
 import withHeader from "@/hocs/withHeader"
 import DashboardLayout from "@/layouts/DashboardLayout"
-import AuthContext from "@/contexts/AuthContext"
-import clsx from "clsx"
+import HabitContext from "@/contexts/HabitContext"
 
 const Dashboard = () => {
     const { user } = use(AuthContext)
+    const { getHabits } = use(HabitContext)
 
     const gridClass = {
         container: clsx('grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 grid-rows-2 gap-4'),
@@ -17,6 +19,10 @@ const Dashboard = () => {
         tracker: clsx('lg:col-span-3 md:col-span-2 row-span-2'),
         tasks: clsx('lg:col-start-1 md:col-start-2 col-start-1 lg:row-start-2 md:row-start-1')
     }
+
+    useEffect(() => {
+        getHabits()
+    }, [getHabits])
 
     return (
         <DashboardLayout>
