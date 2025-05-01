@@ -1,10 +1,10 @@
-import { memo, use } from 'react';
+import { memo } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form'
-import { useNavigate } from 'react-router';
+import { NavLink, useNavigate } from 'react-router';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui"
 import Button from '@/components/Button/Button';
-import AuthContext from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import SignInFormSchema from '@/pages/signin/schemas/SignInFormSchema';
 
 export type SignInFormType = {
@@ -17,13 +17,17 @@ const SignInForm: React.FC = () => {
         resolver: zodResolver(SignInFormSchema),
         mode: 'onSubmit'
     })
-    
-    const { signIn } = use(AuthContext)
-    const navigate = useNavigate()
 
-    const onSubmit: SubmitHandler<SignInFormType> = async (formData) => {
-        await signIn({ email: formData.email, name: 'John Doe', id: 1 })
-        navigate('/dashboard')
+    const navigate = useNavigate()
+    const { signIn } = useAuth()
+
+    const onSubmit: SubmitHandler<SignInFormType> = async (data) => {
+        try {
+            await signIn(data)
+            navigate('/dashboard')
+        } catch (error: unknown) {
+            console.error('An error occurred while signing up:', error)
+        }
     }
 
     return (
@@ -52,6 +56,11 @@ const SignInForm: React.FC = () => {
                 >
                     {isSubmitting ? 'Signing in...' : 'Sign In'}
                 </Button>
+                
+                <p className="mt-8">
+                    Does not have an account? 
+                    <NavLink className="ml-2" to="/signup" end>Sign Up</NavLink>
+                </p>
             </form>
         </div>
     )

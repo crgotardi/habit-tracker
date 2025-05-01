@@ -1,34 +1,28 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { use } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
 import { useNavigate } from 'react-router'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import SignUpFormSchema from '../schemas/SignUpFormSchema'
 import Button from '@/components/Button/Button'
 import { Input } from '@/components/ui'
-import AuthContext from '@/contexts/AuthContext'
-import SignUpFormSchema from '../schemas/SignUpFormSchema'
-
-export type SignUpFormType = {
-    name: string
-    email: string
-    password: string
-}
+import { useAuth } from '@/contexts/AuthContext'
+import { SignUpType } from '@/types/user'
 
 const SignUpForm = () => {
+    const { signUp } = useAuth()
     const navigate = useNavigate()
-    const { signUp } = use(AuthContext)
 
-    const { register, formState: { errors, isSubmitting }, handleSubmit } = useForm<SignUpFormType>({
+    const { register, formState: { errors, isSubmitting }, handleSubmit } = useForm<SignUpType>({
         resolver: zodResolver(SignUpFormSchema),
         mode: 'onSubmit'
     })
-    const onSubmit: SubmitHandler<SignUpFormType> = async (data: SignUpFormType) => {
-        await signUp({
-            name: data.name,
-            email: data.email,
-            id: 2
-        })
 
-        navigate('/signin')
+    const onSubmit: SubmitHandler<SignUpType> = async (data: SignUpType) => {
+        try {
+            await signUp(data)
+            navigate('/signin')
+        } catch (error: unknown) {
+            console.error('An error occurred while signing up:', error)
+        }
     }
 
     return (

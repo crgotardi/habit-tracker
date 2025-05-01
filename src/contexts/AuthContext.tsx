@@ -1,34 +1,29 @@
 import { toast } from 'sonner';
-import React, { createContext, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { createContext, use, useCallback, useEffect, useMemo, useState } from 'react'
 import delay from '@/utils/delay';
-import { UserType } from '@/types/user';
+import { SignInType, SignUpType, UserType } from '@/types/user';
+import { createUser, getUserByEmail } from '@/api/services/userService';
+
 
 type AuthContextProps = {
     user: UserType | undefined
     isLoading: boolean,
-    signUp: (user: UserType) => void
-    signIn: (user: UserType) => void
+    signUp: (user: SignUpType) => Promise<UserType | undefined>
+    signIn: (user: SignInType) => Promise<UserType | undefined>
     signOut: () => void
 }
 
-const AuthContext = createContext<AuthContextProps>({
-    user: undefined,
-    isLoading: false,
-    signUp: () => {},
-    signIn: () => {},
-    signOut: () => {},
-})
+const AuthContext = createContext<AuthContextProps | null>(null)
 
 export const AuthProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
     const [user, setUser] = useState<UserType | undefined>(undefined)
     const [isLoading, setIsLoading] = useState(false)
 
-    const signUp = useCallback(async (user: UserType) => {
+    const signUp = useCallback(async (data: SignUpType): Promise<UserType | undefined> => {
         try {
             setIsLoading(true)
-            await delay(3000)
-            setUser(user)
-            toast.success('Successfully registered')
+            const response = await createUser(data)
+            return response
         } catch (error: unknown) {
             toast.error('An error occurred while registering')
             throw new Error(`unable to sign up: ${error}`)
@@ -37,15 +32,23 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({ children }
         }
     }, [])
 
-    const signIn = useCallback(async (user: UserType) => {
+    const signIn = useCallback(async (data: SignInType): Promise<UserType | undefined>  => {
         try {
             setIsLoading(true)
-            await delay(3000)
-            setUser(user)
-            sessionStorage.setItem('user', JSON.stringify(user))
+            const user = await getUserByEmail(data.email)
+
+            if (user) {
+                setIsLoading(false)
+                setUser(user)
+                sessionStorage.setItem('user', JSON.stringify(user))
+                return user
+            }
+
+            throw new Error('user not found')
         } catch (error: unknown) {
-            toast.error('An error occurred while sign in')
-            throw new Error(`unable to sign in: ${error}`)
+            if (error instanceof Error) {
+                toast.error(error.message)
+            }
         } finally {
             setIsLoading(false)
         }
@@ -54,7 +57,7 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({ children }
     const signOut = useCallback(async () => {
         try {
             setIsLoading(true)
-            await delay(3000)
+            await delay(1000)
             setUser(undefined)
             toast.success('Successfully signed out')
             sessionStorage.removeItem('user')
@@ -88,10 +91,20 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({ children }
     }, [])
 
     return (
-        <AuthContext.Provider value={{ ...contextValue }}>
+        <AuthContext.Provider value={contextValue}>
             {children}
         </AuthContext.Provider>
     )
+}
+
+export const useAuth = (): AuthContextProps => {
+    const context = use(AuthContext)
+
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider')
+    }
+
+    return context
 }
 
 export default AuthContext

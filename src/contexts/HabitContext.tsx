@@ -1,6 +1,8 @@
 import { toast } from "sonner";
-import { createContext, ReactNode, useCallback, useState } from "react";
+import { createContext, ReactNode, use, useCallback, useState } from "react";
 import { HabitType, StrikeType } from "@/types/habit";
+import { getHabits as getHabitsApi, getStrikes as getStrikesApi } from '@/api/services/habitService';
+
 
 type HabitContextProps = {
     habits: HabitType[],
@@ -13,16 +15,7 @@ type HabitContextProps = {
     updateStrike: (id: number, isCompleted: boolean) => void,
 }
 
-const HabitContext = createContext<HabitContextProps>({
-    habits: [],
-    getHabits: () => {},
-    addHabit: () => {},
-    removeHabit: () => {},
-    toggleHabit: () => { },
-    strikes: [],
-    getStrikes: () => {},
-    updateStrike: () => {},
-})
+const HabitContext = createContext<HabitContextProps | null>(null)
 
 type HabitProviderProps = {
     children: ReactNode
@@ -32,27 +25,10 @@ export const HabitProvider: React.FC<HabitProviderProps> = ({ children }) => {
     const [habits, setHabits] = useState<HabitType[]>([])
     const [strikes, setStrikes] = useState<StrikeType[]>([])
 
-    const getHabits = useCallback(() => {
+    const getHabits = useCallback(async () => {
         try {
-            const mockedHabits: HabitType[] = [
-                {
-                    id: 1,
-                    description: 'Read a book',
-                    isCompleted: false,
-                },
-                {
-                    id: 2,
-                    description: 'Gym',
-                    isCompleted: false,
-                },
-                {
-                    id: 3,
-                    description: 'Meditation',
-                    isCompleted: true,
-                }
-            ]
-
-            setHabits(mockedHabits)
+            const habits = await getHabitsApi()
+            setHabits(habits)
         } catch (error: unknown) {
             toast.error('An error occurred while adding a new habit')
             throw new Error(`unable to create an habit: ${error}`)
@@ -89,27 +65,10 @@ export const HabitProvider: React.FC<HabitProviderProps> = ({ children }) => {
         }
     }, [habits])
 
-    const getStrikes = useCallback(() => {
+    const getStrikes = useCallback(async () => {
         try {
-            const mockedStrikes: StrikeType[] = [
-                {
-                    id: 1,
-                    description: 'Read a book',
-                    strikes: 3,
-                },
-                {
-                    id: 2,
-                    description: 'Gym',
-                    strikes: 2,
-                },
-                {
-                    id: 3,
-                    description: 'Meditation',
-                    strikes: 1,
-                }
-            ]
-
-            setStrikes(mockedStrikes)
+            const strikes = await getStrikesApi()
+            setStrikes(strikes)
         } catch (error) {
             toast.error('An error occurred while getting strikes')
             throw new Error(`unable to get strikes: ${error}`)
@@ -143,10 +102,20 @@ export const HabitProvider: React.FC<HabitProviderProps> = ({ children }) => {
     }
 
     return (
-        <HabitContext.Provider value={{ ...contextValue }}>
+        <HabitContext.Provider value={contextValue}>
             {children}
         </HabitContext.Provider>
     )
+}
+
+export const useHabit = () => {
+    const context = use(HabitContext)
+
+    if (!context) {
+        throw new Error('useHabit must be used within a HabitProvider')
+    }
+
+    return context
 }
 
 export default HabitContext
